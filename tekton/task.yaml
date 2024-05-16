@@ -1,0 +1,22 @@
+# Task.yaml
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: build-and-push-task
+spec:
+  steps:
+    - name: download-source
+      image: alpine/git
+      script: |
+        git clone https://github.com/RikshitD/Budget-rails-App.git /workspace/source
+    - name: build-image
+      image: docker
+      volumeMounts:
+        - name: docker-socket
+          mountPath: /var/run/docker.sock
+      script: |
+        docker build -t docker.io/rikshitd/budget-rails-app-web /workspace/source
+  volumes:
+    - name: docker-socket
+      hostPath:
+        path: /var/run/docker.sock

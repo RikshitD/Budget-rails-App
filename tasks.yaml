@@ -1,0 +1,26 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: kaniko-build-and-push
+spec:
+  workspaces:
+    - name: source
+      emptyDir: {}
+    - name: dockerconfig
+      secret:
+        secretName: my-secret
+  steps:
+    - name: fetch-repo
+      image: alpine/git
+      script: |
+        git clone https://github.com/RikshitD/Budget-rails-App.git /workspace/source
+    - name: build-and-push
+      image: gcr.io/kaniko-project/executor:latest
+      env:
+        - name: DOCKER_CONFIG
+          value: /workspace/dockerconfig
+      command:
+        - /kaniko/executor
+      args:
+        - --context=/workspace/source
+        - --destination=rikshitd/budget-rails-app-web:latest

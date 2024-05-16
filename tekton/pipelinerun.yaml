@@ -1,0 +1,7 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: build-and-push-pipelinerun
+spec:
+  pipelineRef:
+    name: build-and-push-pipeline
